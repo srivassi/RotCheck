@@ -27,7 +27,7 @@ const JUDGES = [
     color: "#6dd49a",
     blob: "56% 44% 46% 54% / 44% 58% 42% 58%",
     intro: "I look for real learning value instead of empty entertainment.",
-    highIsGood: true,
+    highIsBad: true,
   },
   {
     key: "manipulation", agentId: "manipulation",        endpoint: "/agents/manipulation/stream",
