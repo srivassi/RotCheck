@@ -1,0 +1,11 @@
+fastapi==0.115.12
+uvicorn==0.34.2
+yt-dlp==2025.6.9
+librosa==0.10.2.post1
+numpy==2.2.6
+anthropic==0.52.0
+python-multipart==0.0.20
+httpx==0.28.1
+pydantic==2.11.7
+python-dotenv==1.1.0
+cryptography==45.0.3
