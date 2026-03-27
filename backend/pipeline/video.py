@@ -15,26 +15,32 @@ def extract_video(url: str, out_dir: str) -> dict:
     audio_path = os.path.join(out_dir, "audio.wav")
     sub_prefix = os.path.join(out_dir, "sub")
 
-    # Single yt-dlp call: dump metadata JSON + write auto-subtitles
+    # Metadata only — isolated so subtitle warnings can't corrupt the JSON parse
     meta_result = subprocess.run(
+        ["yt-dlp", "--dump-json", "--skip-download", url],
+        capture_output=True, text=True, check=False,
+    )
+    meta = {}
+    if meta_result.stdout.strip():
+        for line in reversed(meta_result.stdout.strip().splitlines()):
+            try:
+                meta = json.loads(line)
+                break
+            except Exception:
+                continue
+
+    # Subtitles — separate call so failures here don't affect metadata
+    subprocess.run(
         [
             "yt-dlp",
-            "--dump-json",
             "--write-auto-sub", "--sub-format", "json3",
             "--sub-langs", "en.*",
             "--skip-download",
             "-o", sub_prefix,
             url,
         ],
-        capture_output=True, text=True, check=False,
+        capture_output=True, check=False,
     )
-    meta = {}
-    if meta_result.returncode == 0 and meta_result.stdout.strip():
-        try:
-            # --dump-json prints one JSON object per line; take the last
-            meta = json.loads(meta_result.stdout.strip().splitlines()[-1])
-        except Exception:
-            pass
 
     # Download video (best mp4) — used for both scene detection and audio extraction
     subprocess.run(
@@ -130,8 +136,6 @@ def analyze_audio(audio_path: str, duration_sec: int = 0) -> dict:
     onset_env = librosa.onset.onset_strength(y=y, sr=sr)
     onsets = librosa.onset.onset_detect(
         onset_envelope=onset_env, sr=sr, units="time",
-        backtrack=True,  # snap to the actual attack, not the peak
-        delta=0.5,       # higher delta = only strong onsets, less jitter
     )
     cuts_per_minute = len(onsets) / max(duration_min, 0.1)
 
