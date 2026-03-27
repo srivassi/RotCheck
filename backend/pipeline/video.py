@@ -51,12 +51,16 @@ def extract_video(url: str, out_dir: str) -> dict:
             ).strip()
             break
 
+    thumbnail = meta.get("thumbnail", "")
+    if not thumbnail and meta.get("thumbnails"):
+        thumbnail = meta["thumbnails"][-1].get("url", "")
+
     return {
         "title": meta.get("title", ""),
         "description": meta.get("description", ""),
         "duration": meta.get("duration", 0),
         "channel": meta.get("channel", meta.get("uploader", "")),
-        "thumbnail": meta.get("thumbnail", ""),
+        "thumbnail": thumbnail,
         "audio_path": audio_path if os.path.exists(audio_path) else None,
         "transcript": transcript,
     }
