@@ -2,6 +2,9 @@
 
 Scores how overstimulating/brain-rotty YouTube content is for kids, grounded in neuroscience.
 
+Prezi link: https://prezi.com/p/edit/rsyd2wcrpvna/
+Devpost link: https://devpost.com/software/rotcheck
+
 ## Prerequisites
 
 - Python 3.11+
@@ -34,7 +37,7 @@ npm install
 npm start
 ```
 
-App runs at http://localhost:3000
+App runs at https://watchwise-blond.vercel.app/
 
 ## Features
 
